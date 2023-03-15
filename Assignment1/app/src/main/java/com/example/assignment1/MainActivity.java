@@ -1,9 +1,10 @@
 package com.example.assignment1;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -17,17 +18,22 @@ import java.util.concurrent.Future;
 
 public class MainActivity extends AppCompatActivity {
 
+    @SuppressLint("DefaultLocale")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         TextView eqText = findViewById(R.id.solution_tv);
         TextView resText = findViewById(R.id.result_tv);
-        updateText(resText,"");
-        updateText(eqText,"");
+        updateText(resText, "");
+        updateText(eqText, "");
 
         final String[] expr = {""};
+
 
         Button button0 = findViewById(R.id.button_0);
         Button button1 = findViewById(R.id.button_1);
@@ -49,169 +55,70 @@ public class MainActivity extends AppCompatActivity {
         Button buttonPlus = findViewById(R.id.button_plus);
         Button buttonMinus = findViewById(R.id.button_minus);
 
-        button0.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expr[0] = expr[0] + "0";
-                updateText(eqText, expr[0]);
+        button0.setOnClickListener(view -> buttonPressed(eqText, expr, "0"));
+        button1.setOnClickListener(view -> buttonPressed(eqText, expr, "1"));
 
-            }
-        });
-        button1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expr[0] = expr[0] + "1";
-                updateText(eqText, expr[0]);
+        button2.setOnClickListener(view -> buttonPressed(eqText, expr, "2"));
 
-            }
-        });
+        button3.setOnClickListener(view -> buttonPressed(eqText, expr, "3"));
+        button4.setOnClickListener(view -> buttonPressed(eqText, expr, "4"));
+        button5.setOnClickListener(view -> buttonPressed(eqText, expr, "5"));
 
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expr[0] = expr[0] + "2";
-                updateText(eqText, expr[0]);
+        button6.setOnClickListener(view -> buttonPressed(eqText, expr, "6"));
+        button7.setOnClickListener(view -> buttonPressed(eqText, expr, "7"));
+        button8.setOnClickListener(view -> buttonPressed(eqText, expr, "8"));
+        button9.setOnClickListener(view -> buttonPressed(eqText, expr, "9"));
+        buttonPlus.setOnClickListener(view -> buttonPressed(eqText, expr, "+"));
+        buttonDivide.setOnClickListener(view -> buttonPressed(eqText, expr, "/"));
+        buttonMinus.setOnClickListener(view -> buttonPressed(eqText, expr, "-"));
+        buttonOpenBracket.setOnClickListener(view -> buttonPressed(eqText, expr, "("));
+        buttonDot.setOnClickListener(view -> buttonPressed(eqText, expr, "."));
 
-            }
+        buttonCloseBracket.setOnClickListener(view -> buttonPressed(eqText, expr, ")"));
+        buttonAC.setOnClickListener(view -> {
+            expr[0] = "";
+            buttonPressed(eqText, expr, "");
+            buttonPressed(resText, expr, "");
         });
+        buttonMultiply.setOnClickListener(view -> buttonPressed(eqText, expr, "*"));
+        buttonEq.setOnClickListener(view -> {
+            double result;
 
-        button3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expr[0] = expr[0] + "3";
-                updateText(eqText, expr[0]);
+            ExecutorService exec = Executors.newFixedThreadPool(1);
+            Expression e = new ExpressionBuilder(expr[0])
+                    .build();
+            Future<Double> future = ((Expression) e).evaluateAsync(exec);
+            try {
+                result = future.get();
 
-            }
-        });
-        button4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expr[0] = expr[0] + "4";
-                updateText(eqText, expr[0]);
-
-            }
-        });
-        button5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expr[0] = expr[0] + "5";
-                updateText(eqText, expr[0]);
-
-            }
-        });
-
-        button6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expr[0] = expr[0] + "6";
-                updateText(eqText, expr[0]);
-
-            }
-        });
-        button7.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expr[0] = expr[0] + "7";
-                updateText(eqText, expr[0]);
-
-            }
-        });
-        button8.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expr[0] = expr[0] + "8";
-                updateText(eqText, expr[0]);
-
-            }
-        });
-        button9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expr[0] = expr[0] + "9";
-                updateText(eqText, expr[0]);
-
-            }
-        });
-        buttonPlus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expr[0] = expr[0] + "+";
-                updateText(eqText, expr[0]);
-            }
-        });
-        buttonDivide.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expr[0] = expr[0] + "/";
-                updateText(eqText, expr[0]);
-            }
-        });
-        buttonMinus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expr[0] = expr[0] + "-";
-                updateText(eqText, expr[0]);
-            }
-        });
-        buttonOpenBracket.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expr[0] = expr[0] + "(";
-                updateText(eqText, expr[0]);
-            }
-        });
-
-        buttonCloseBracket.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expr[0] = expr[0] + ")";
-                updateText(eqText, expr[0]);
-            }
-        });
-        buttonAC.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                updateText(resText,"");
-                updateText(eqText,"");
-            }
-        });
-        buttonMultiply.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expr[0] = expr[0] + "*";
-                updateText(eqText, expr[0]);
-            }
-        });
-        buttonEq.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ExecutorService exec = Executors.newFixedThreadPool(1);
-                Expression e = new ExpressionBuilder(expr[0])
-
-                        .build();
-
-                Future<Double> future = ((net.objecthunter.exp4j.Expression) e).evaluateAsync(exec);
-                double result = 0;
-                try {
-                    result = future.get();
-                } catch (ExecutionException ex) {
-                    throw new RuntimeException(ex);
-                } catch (InterruptedException ex) {
-                    throw new RuntimeException(ex);
-                }
-                updateText(resText,String.valueOf(result));
+                updateText(resText, String.format("%.3f", result));
                 expr[0] = "";
-                updateText(eqText,expr[0]);
+                updateText(eqText, expr[0]);
+            } catch (ExecutionException | InterruptedException ex) {
+                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                alertDialog.setTitle("Hata");
+                alertDialog.setMessage("Hatali matematiksel ifade!");
+                updateText(resText, "");
+                expr[0] = "";
+                updateText(eqText, expr[0]);
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        (dialog, which) -> dialog.dismiss());
+                alertDialog.show();
             }
+
         });
-
-
-
 
 
     }
-    public void updateText(TextView textView, String string){
+
+
+    public void updateText(TextView textView, String string) {
         textView.setText(string);
+    }
+
+    public void buttonPressed(TextView textView, String[] string, String substring) {
+        string[0] = string[0] + substring;
+        textView.setText(string[0]);
     }
 
 }
